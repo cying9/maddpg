@@ -4,7 +4,7 @@ from torch import functional as F
 
 
 def get_device(disable_cuda=False):
-    if not disable_cuda & torch.cuda.is_available():
+    if (not disable_cuda) & torch.cuda.is_available():
         device = "cuda"
         print(f'Using CUDA ({torch.cuda.get_device_name(torch.cuda.current_device())})')
     else:

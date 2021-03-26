@@ -107,7 +107,7 @@ class MADDPG():
     def update(self, agents, t):
         if len(self.replay_buffer) < self.max_replay_buffer_len:
             return
-        if not t % 100 == 0:
+        if not (t % 100 == 0):
             return
 
         self.replay_sample_index = self.replay_buffer.make_index(self.args.batch_size)
@@ -140,7 +140,7 @@ class MADDPG():
         vf_loss = torch.mean(torch.square(q - target_q))
 
         # optimization step
-        self.vf_optim.zero_grad()
+        self.vf_optim.zero_grad(set_to_none=True)
         vf_loss.backward()
         nn.utils.clip_grad_norm_(self.vf.parameters(), self.grad_norm_clipping)
         self.vf_optim.step()
@@ -156,7 +156,7 @@ class MADDPG():
         pg_loss = - self.vf(obs_n, act_input_n).mean()
         pi_loss = pg_loss + p_reg * 1e-3
 
-        self.pi_optim.zero_grad()
+        self.pi_optim.zero_grad(set_to_none=True)
         pi_loss.backward()
         nn.utils.clip_grad_norm_(self.pi.parameters(), self.grad_norm_clipping)
         self.pi_optim.step()
